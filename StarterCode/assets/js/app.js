@@ -94,9 +94,9 @@ return circlesGroup;
 }
 
 // Retrieve data from the CSV file and execute everything below
-d3.csv("data.csv").then(function(stateData,err){
+d3.csv("assets/data/data.csv").then(function(stateData,err){
     if (err) throw err; 
-
+console.log(stateData)
   // parse data
 
 stateData.forEach(function(data){
@@ -112,7 +112,7 @@ var xLinearScale = xScale(stateData, chosenXAxis);
 // Create y scale function 
 
 var yLinearScale = d3.scaleLinear()
-    .domain([0,d3.max(hairData, d=> d.obesity)])
+    .domain([0,d3.max(stateData, d=> d.obesity)])
     .range([height,0])
 
 // Create initial axis functions
