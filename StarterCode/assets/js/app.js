@@ -29,6 +29,7 @@ var chartGroup = svg.append("g")
 // Initial Params
 
 var chosenXAxis = "poverty"
+var chosenYAxis = "obesity"
 
 // function used for updating x-scale var upon click on axis label
 function xScale(stateData, chosenXAxis){
@@ -39,6 +40,16 @@ function xScale(stateData, chosenXAxis){
 .range([0,width]);
 
 return xLinearScale
+}
+// function used for updating y-scale var upon click on axis label
+function yScale(stateData, chosenXAxis){
+    var yLinearScale = d3.scaleLinear()
+    .domain([d3.min(stateData, d => d[chosenXAxis]) * 0.8, 
+    d3.max(stateData, d=>d[chosenYAxis]) * 1.2
+])
+.range([0,width]);
+
+return yLinearScale
 }
 
 // function used for updating xAxis var upon click on axis label
@@ -78,7 +89,7 @@ function updateToolTip(chosenXAxis, circlesGroup){
     }
 
     var toolTip = d3.tip()
-        .attr("class", "tooltip")
+        .attr("class", "d3-tip")
         .offset([80,-60])
         .html(function(d){
             return(`${d.state}<br>${label}${d[chosenXAxis]}`);
@@ -139,9 +150,12 @@ var circlesGroup = chartGroup.selectAll("circle")
     .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
     .attr("cy", d=> yLinearScale(d.obesity))
-    .attr("r", 20)
-    .attr("fill", "blue")
+    .attr("r", 10)
+    .attr("fill", "turquoise")
+    .attr("style", d=> d.abbr)
     .attr("opacity", ".5");
+    // .append("text")
+    // .text(d=>d.abbr)
 
 // Create group for three x-axis labels
 var labelsGroup = chartGroup.append("g")
@@ -176,6 +190,22 @@ chartGroup.append("text")
 .attr("dy", "1em")
 .classed("axis-text", true)
 .text("Obesity");
+// chartGroup.append("text")
+// .attr("transform", "rotate(-90)")
+// .attr("y", 0 - margin.left+20)
+// .attr("x", 0 - (height / 2))
+// .attr("dy", "1em")
+// .classed("axis-text", true)
+// .text("Smokes");
+
+// chartGroup.append("text")
+// .attr("transform", "rotate(-90)")
+// .attr("y", 0 - margin.left+40)
+// .attr("x", 0 - (height / 2))
+// .attr("dy", "1em")
+// .classed("axis-text", true)
+// .text("Lacks Healthcare");
+
 
 // updateToolTip function above csv import 
 var circlesGroup = updateToolTip(chosenXAxis,circlesGroup);
