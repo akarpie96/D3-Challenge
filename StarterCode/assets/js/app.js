@@ -1,5 +1,5 @@
 // @TODO: YOUR CODE HERE!
-var sgvWidth = 960;
+var svgWidth = 960;
 var svgHeight = 500;
 
 
@@ -28,7 +28,7 @@ var chartGroup = svg.append("g")
 
 // Initial Params
 
-var chosenXAxis = "Poverty"
+var chosenXAxis = "poverty"
 
 // function used for updating x-scale var upon click on axis label
 function xScale(stateData, chosenXAxis){
@@ -59,4 +59,36 @@ function renderCircles(circlesGroup, newXScale,chosenXAxis){
         .attr("cx", d => newXScale(d[chosenXAxis]));
     
     return circlesGroup
+}
+
+// function used for updating circles group with new tooltip
+
+function updateToolTip(chosenXAxis, circlesGroup){
+    var label; 
+    
+    if(chosenXAxis === "poverty"){
+        label = "Poverty Rate"
+
+    } else if (chosenXAxis === "age"){ 
+        label = "Age"
+
+    }
+    else {
+        label = "Household Income"
+    }
+
+    var toolTip = d3.tip()
+        .attr("class", "tooltip")
+        .offset([80,-60])
+        .html(function(d){
+            return(`${d.state}<br>${label}${d[chosenXAxis]}`);
+        })
+    circlesGroup.call(toolTip);
+    circlesGroup.on("mouseover", function(data){
+        toolTip.show(data)
+    })
+    .on("mouseout", function(data,index){
+        toolTip.hide(data)
+    })
+return circlesGroup;
 }
