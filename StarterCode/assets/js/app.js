@@ -72,6 +72,12 @@ function renderCircles(circlesGroup, newXScale,chosenXAxis){
     return circlesGroup
 }
 
+function renderLabels(circleLabels,newXScale,chosenXAxis){
+    circleLabels.transition()
+    .duration(1000)
+    .attr("x", d =>newXScale(d[chosenXAxis]))
+    return circleLabels
+}
 // function used for updating circles group with new tooltip
 
 function updateToolTip(chosenXAxis, circlesGroup){
@@ -94,9 +100,9 @@ function updateToolTip(chosenXAxis, circlesGroup){
         .html(function(d){
             return(`${d.state}<br>${label}${d[chosenXAxis]}`);
         })
-    circlesGroup.call(toolTip);
+    chartGroup.call(toolTip);
     circlesGroup.on("mouseover", function(data){
-        toolTip.show(data)
+        toolTip.show(data,this)
     })
     .on("mouseout", function(data,index){
         toolTip.hide(data)
@@ -154,8 +160,23 @@ var circlesGroup = chartGroup.selectAll("circle")
     .attr("fill", "turquoise")
     .attr("style", d=> d.abbr)
     .attr("opacity", ".5");
-    // .append("text")
-    // .text(d=>d.abbr)
+
+    var circleLabels = chartGroup.selectAll(null).data(stateData).enter().append("text");
+    circleLabels
+        .attr("x", function(d) {
+            return xLinearScale(d[chosenXAxis]);
+            })
+        .attr("y", function(d) {
+            return yLinearScale(d.obesity);
+            })
+        .text(function(d) {
+            return d.abbr;
+            })
+        .attr("font-family", "arial")
+        .attr("font-size", "10px")
+        .attr("text-anchor", "middle")
+        .attr("fill", "black");
+
 
 // Create group for three x-axis labels
 var labelsGroup = chartGroup.append("g")
@@ -226,6 +247,8 @@ labelsGroup.selectAll("text")
         xAxis= renderAxes(xLinearScale, xAxis);
 
         circlesGroup= renderCircles(circlesGroup, xLinearScale, chosenXAxis)
+
+        labelsGroup=renderLabels(circleLabels, xLinearScale, chosenXAxis )
 
         circlesGroup = updateToolTip(chosenXAxis,circlesGroup);
 
